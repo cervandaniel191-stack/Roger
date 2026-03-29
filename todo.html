@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        #todo-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        #todo-list li {
+            background: #fff;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        input[type='text'] {
+            width: calc(100% - 90px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<h1>My To-Do List</h1>
+<input type="text" id="task-input" placeholder="Add a new task...">
+<button id="add-task">Add Task</button>
+
+<ul id="todo-list"></ul>
+
+<script>
+    const taskInput = document.getElementById('task-input');
+    const addTaskButton = document.getElementById('add-task');
+    const todoList = document.getElementById('todo-list');
+
+    // Load existing tasks from local storage
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    const renderTasks = () => {
+        todoList.innerHTML = '';
+        tasks.forEach((task, index) => {
+            const li = document.createElement('li');
+            li.textContent = task;
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.onclick = () => {
+                tasks.splice(index, 1);
+                updateLocalStorage();
+                renderTasks();
+            };
+            li.appendChild(deleteButton);
+            todoList.appendChild(li);
+        });
+    };
+
+    const updateLocalStorage = () => {
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    };
+
+    addTaskButton.onclick = () => {
+        const task = taskInput.value.trim();
+        if (task) {
+            tasks.push(task);
+            taskInput.value = '';
+            updateLocalStorage();
+            renderTasks();
+        }
+    };
+
+    // Initial rendering
+    renderTasks();
+</script>
+
+</body>
+</html>
